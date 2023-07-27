@@ -117,7 +117,7 @@ def drop_duplicates(fpath: Path, output: str=None, prefix: str='modified') -> No
     # Obtain hash values
     print(f'Handling {fpath}...')
     file = fitz.open(fpath)
-    toc = file.get_toC()
+    toc = file.get_toc()
     images = [pix2np(page.get_pixmap()) for page in file]
     hash_list = all_hash(images)
     # Calculate Hamming distances
