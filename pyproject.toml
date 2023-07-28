@@ -7,7 +7,7 @@ authors = [
     {name = "Enoch2090", email = "gyc990926@gmail.com"},
 ]
 description = "A simple tool automatically drops the duplicate pages in PDF files."
-version = "1.0.3"
+version = "1.1.0"
 readme = "README.md"
 requires-python = ">=3.7"
 license = {text = "GPLv3"}
@@ -27,9 +27,6 @@ packages = ["nyquisis", "images"]
 
 [project.scripts]
 nyquisis = "nyquisis.nyquisis:main"
-
-#[tool.setuptools.packages.find]
-#where = ["nyquisis"]
 
 # ... other project metadata fields as specified in:
 #     https://packaging.python.org/en/latest/specifications/declaring-project-metadata/

@@ -1,5 +1,5 @@
 import fitz
-import scipy.fftpack
+import scipy.fft
 import numpy as np
 import argparse
 import os
@@ -18,15 +18,7 @@ def parse_args():
 
 
 def pix2np(pix):
-    '''
-    Credit: https://stackoverflow.com/questions/53059007/python-opencv
-    '''
-    im = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
-        pix.h, pix.w, pix.n)
-    im = np.ascontiguousarray(im[..., [2, 1, 0]])  # rgb to bgr
-    r, g, b = im[:, :, 0], im[:, :, 1], im[:, :, 2]
-    gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
-    return gray
+    return np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.h, pix.w)
 
 
 def scale(im, nR, nC):  
@@ -41,7 +33,7 @@ def scale(im, nR, nC):
 
 def phash(image, hash_size=32, highfreq_factor=4):
     pixels = np.asarray(image)
-    dct = scipy.fftpack.dct(scipy.fftpack.dct(pixels, axis=0), axis=1)
+    dct = scipy.fft.dctn(pixels)
     dctlowfreq = dct[:hash_size, :hash_size]
     med = np.median(dctlowfreq)
     diff = dctlowfreq > med
@@ -118,7 +110,8 @@ def drop_duplicates(fpath: Path, output: str=None, prefix: str='modified') -> No
     print(f'Handling {fpath}...')
     file = fitz.open(fpath)
     toc = file.get_toc()
-    images = [pix2np(page.get_pixmap()) for page in file]
+    print(f'Converting pages to grayscale images...')
+    images = [pix2np(page.get_pixmap(colorspace=fitz.csGRAY)) for page in tqdm(file)]
     hash_list = all_hash(images)
     # Calculate Hamming distances
     hash_altr = hash_list[1::]
